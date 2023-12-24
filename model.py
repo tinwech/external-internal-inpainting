@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class ResBlock(nn.Sequential):
     def __init__(self, num_channels, kernel_size, norm_layer):
         super(ResBlock, self).__init__()
@@ -13,9 +14,9 @@ class ResBlock(nn.Sequential):
             nn.ReflectionPad2d((kernel_size - 1) // 2),
             nn.Conv2d(num_channels, num_channels, kernel_size, bias=False),
             norm_layer(num_channels, affine=True),
-        ]        
+        ]
         self.blocks = nn.Sequential(*layers)
-        
+
     def forward(self, x):
         return self.blocks(x) + x
 
@@ -32,7 +33,7 @@ class ResNet(nn.Module):
 
         for i in range(num_blocks):
             layers += [ResBlock(num_channels, kernel_size, norm_layer)]
-       
+
         layers += [
             nn.ReflectionPad2d((kernel_size - 1) // 2),
             nn.Conv2d(num_channels, num_channels, kernel_size),
@@ -42,7 +43,7 @@ class ResNet(nn.Module):
             nn.ReflectionPad2d((kernel_size - 1) // 2),
             nn.Conv2d(num_channels, output_channels, kernel_size),
             nn.Sigmoid()]
-            
+
         self.model = nn.Sequential(*layers)
 
     def forward(self, input):
